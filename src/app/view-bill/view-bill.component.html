@@ -1,0 +1,62 @@
+<div class="container">
+  <h2>View / Pay Bills</h2>
+
+  <table>
+    <thead>
+    <tr>
+      <th>
+        <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllSelection()" />
+      </th>
+      <th>Consumer No</th>
+      <th>Bill Number</th>
+      <th>Payment Status</th>
+      <th>Connection Type</th>
+      <th>Connection Status</th>
+      <th>Mobile Number</th>
+      <th>Bill Period</th>
+      <th>Bill Date</th>
+      <th>Due Date</th>
+      <th>Disconnection Date</th>
+      <th>Due Amount</th>
+      <th>Payable Amount</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let bill of bills" [class.checked-row]="bill.selected">
+      <td>
+        <input
+          type="checkbox"
+          [(ngModel)]="bill.selected"
+          [disabled]="!isValidAmount(bill.payableAmount, bill.dueAmount)"
+          (change)="updateTotalAmount()"
+        />
+      </td>
+      <td>{{ bill.consumerNo }}</td>
+      <td>{{ bill.billNumber }}</td>
+      <td>{{ bill.paymentStatus }}</td>
+      <td>{{ bill.connectionType }}</td>
+      <td>{{ bill.connectionStatus }}</td>
+      <td>{{ bill.mobileNumber }}</td>
+      <td>{{ bill.billPeriod }}</td>
+      <td>{{ bill.billDate }}</td>
+      <td>{{ bill.dueDate }}</td>
+      <td>{{ bill.disconnectionDate }}</td>
+      <td>{{ bill.dueAmount | currency }}</td>
+      <td>
+        <input
+          type="number"
+          [(ngModel)]="bill.payableAmount"
+          (input)="handlePayableChange(bill)"
+        />
+        <div class="error" *ngIf="bill.errorMessage">{{ bill.errorMessage }}</div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+
+  <div class="summary">
+    <p>Total Payable Amount: {{ totalPayableAmount | currency }}</p>
+    <button (click)="proceedToPay()">Proceed to Pay</button>
+    <div class="error" *ngIf="proceedError">{{ proceedError }}</div>
+  </div>
+</div>
