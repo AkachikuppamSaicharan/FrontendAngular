@@ -27,8 +27,7 @@
         <input
           type="checkbox"
           [(ngModel)]="bill.selected"
-          [disabled]="!isValidAmount(bill.payableAmount, bill.dueAmount)"
-          (change)="updateTotalAmount()"
+          (change)="onCheckboxChange(bill)"
         />
       </td>
       <td>{{ bill.consumerNo }}</td>
@@ -41,12 +40,13 @@
       <td>{{ bill.billDate }}</td>
       <td>{{ bill.dueDate }}</td>
       <td>{{ bill.disconnectionDate }}</td>
-      <td>{{ bill.dueAmount | currency }}</td>
+      <td>{{ bill.dueAmount | currency:'INR' }}</td>
       <td>
         <input
           type="number"
           [(ngModel)]="bill.payableAmount"
           (input)="handlePayableChange(bill)"
+          [disabled]="!bill.selected"
         />
         <div class="error" *ngIf="bill.errorMessage">{{ bill.errorMessage }}</div>
       </td>
@@ -55,8 +55,12 @@
   </table>
 
   <div class="summary">
-    <p>Total Payable Amount: {{ totalPayableAmount | currency }}</p>
-    <button (click)="proceedToPay()">Proceed to Pay</button>
-    <div class="error" *ngIf="proceedError">{{ proceedError }}</div>
+    <div class="summary-left">
+      <div class="error" *ngIf="proceedError">{{ proceedError }}</div>
+    </div>
+    <div class="summary-right">
+      <p>Total Payable Amount: {{ totalPayableAmount | currency:'INR':'symbol' }}</p>
+      <button (click)="proceedToPay()">Proceed to Pay</button>
+    </div>
   </div>
-</div>
+

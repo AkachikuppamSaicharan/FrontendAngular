@@ -68,3 +68,19 @@ button {
 button:hover {
   background-color: #16a085;
 }
+.summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.summary-left .error {
+  color: red;
+  font-weight: bold;
+  font-size: 1.3rem;
+}
+
+.summary-right {
+  text-align: right;
+}

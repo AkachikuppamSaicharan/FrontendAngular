@@ -6,10 +6,12 @@ import { AppComponent } from './app.component';
 import {CommonModule} from '@angular/common';
 import {Router, RouterModule, RouterOutlet} from '@angular/router';
 import {ViewBillsComponent} from './view-bill/view-bill.component';
+import { ViewBillSummaryComponent } from './view-bill-summary/view-bill-summary.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+
 
   ],
   imports: [
@@ -17,6 +19,7 @@ import {ViewBillsComponent} from './view-bill/view-bill.component';
     AppRoutingModule,
     ViewBillsComponent,
     FormsModule,
+    ViewBillSummaryComponent,
   ],
   providers: [],
   bootstrap: [AppComponent]
