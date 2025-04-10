@@ -182,3 +182,13 @@ h2::after {
 h2:hover::after {
   transform: scaleX(1);
 }
+.download-link {
+  color: #2563eb; /* blue-600 equivalent */
+  text-decoration: none;
+  cursor: pointer;
+  transition: text-decoration 0.2s ease;
+}
+
+.download-link:hover {
+  text-decoration: underline;
+}

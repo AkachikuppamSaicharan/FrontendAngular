@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import {CurrencyPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
+import * as jspdf from "jspdf";
+import jsPDF from "jspdf";
 
 interface Bill {
   billNumber: number;
@@ -97,22 +99,14 @@ export class BillHistoryComponent implements OnInit {
     this.sortBills();
   }
 
-  // onDateChange() {
-  //   this.dateRangeError = false;
-  //
-  //   if (this.fromDate && this.toDate) {
-  //     const from = new Date(this.fromDate);
-  //     const to = new Date(this.toDate);
-  //
-  //     if (to < from) {
-  //       this.dateRangeError = true;
-  //       this.filteredBills = []; // Optionally clear data
-  //       return;
-  //     }
-  //   }
-  //
-  //   this.filterBills();
-  // }
+  customer = {
+    customerNumber: 'CUST123456',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+    mobileNumber: '+1 987-654-3210',
+    address: '123 Main Street, Springfield, IL 62704',
+    connectionType: 'Residential'
+  };
   onDateChange() {
     this.dateRangeError = false;
 
@@ -213,5 +207,42 @@ export class BillHistoryComponent implements OnInit {
   hasAnyPaidBills(): boolean {
     return this.filteredBills.some(bill => bill.paymentStatus === 'Paid');
   }
+  formatDate(dateString: string): string {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-GB');
+  }
+  generatePDF(bill: Bill) {
+    const doc = new jsPDF();
+
+    // Customer Details Block
+    doc.setFontSize(14);
+    doc.text('Customer Details', 10, 10);
+    doc.setFontSize(11);
+    doc.text(`Customer Number: ${bill.customerNumber}`, 10, 20);
+    doc.text(`Name: ${this.customer.name}`, 10, 30);
+    doc.text(`Email: ${this.customer.email}`, 10, 40);
+    doc.text(`Address: ${this.customer.address}`, 10, 60);
+    doc.text(`Connection Type: ${this.customer.connectionType}`, 10, 70);
+
+    // Bill Details Block
+    doc.setFontSize(14);
+    doc.text('Bill Details', 10, 90);
+    doc.setFontSize(11);
+    doc.text(`Bill Number: ${bill.billNumber}`, 10, 100);
+    doc.text(`Bill Date: ${bill.billDate}`, 10, 110);
+    doc.text(`Billing Period: ${bill.billingPeriod}`, 10, 120);
+    doc.text(`Due Date: ${bill.dueDate}`, 10, 130);
+    doc.text(`Bill Amount: ₹${bill.billAmount}`, 10, 140);
+    doc.text(`Payment Status: ${bill.paymentStatus}`, 10, 150);
+    doc.text(`Payment Date: ${bill.paymentDate || '-'}`, 10, 160);
+    doc.text(`Mode of Payment: ${bill.modeOfPayment || '-'}`, 10, 170);
+
+    // Open in New Tab
+    const pdfBlob = doc.output('blob');
+    const blobUrl = URL.createObjectURL(pdfBlob);
+    window.open(blobUrl, '_blank');
+  }
+
+
 
 }

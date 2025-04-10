@@ -55,14 +55,13 @@
         <td>{{ bill.paymentDate ? (bill.paymentDate | date: 'yyyy-MM-dd') : '-' }}</td>
         <td>{{ bill.modeOfPayment || '-' }}</td>
           <td>
-              <a
-                      *ngIf="bill.paymentStatus === 'Paid'"
-                      [href]="bill.pdfLink"
-                      target="_blank"
-                      class="text-blue-600 hover:underline"
-              >
+              <a *ngIf="bill.paymentStatus === 'Paid'"
+                 (click)="generatePDF(bill)"
+                 class="download-link"
+                 style="cursor: pointer;">
                   Download
               </a>
+
               <span
                       *ngIf="bill.paymentStatus === 'Unpaid'"
                       class="text-gray-400 cursor-not-allowed"
@@ -86,4 +85,4 @@
     </span>
         </div>
     </ng-template>
-
+</div>
