@@ -8,10 +8,16 @@ import {Router, RouterModule, RouterOutlet} from '@angular/router';
 import {ViewBillsComponent} from './view-bill/view-bill.component';
 import { ViewBillSummaryComponent } from './view-bill-summary/view-bill-summary.component';
 import { BillHistoryComponent } from './bill-history/bill-history.component';
+import {PaymentsPageComponent} from './payments-page/payments-page.component';
+import { InvoiceGenComponent } from './invoice-gen/invoice-gen.component';
 
 @NgModule({
   declarations: [
     AppComponent,
+
+
+
+
 
 
 
@@ -23,7 +29,9 @@ import { BillHistoryComponent } from './bill-history/bill-history.component';
     FormsModule,
     ViewBillSummaryComponent,
     BillHistoryComponent,
-    ReactiveFormsModule
+    PaymentsPageComponent,
+    ReactiveFormsModule,CommonModule,
+    InvoiceGenComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
