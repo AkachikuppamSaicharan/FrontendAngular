@@ -1,0 +1,89 @@
+<div class="container">
+  <h2>Bill History</h2>
+
+  <div class="controls">
+    <label>
+      From:
+      <input type="date" [(ngModel)]="fromDate" (change)="onDateChange()" />
+    </label>
+
+    <label>
+      To:
+      <input type="date" [(ngModel)]="toDate" (change)="onDateChange()" />
+    </label>
+
+    <label>
+      Status:
+      <select [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange($event)">
+        <option>All</option>
+        <option>Paid</option>
+        <option>Unpaid</option>
+      </select>
+    </label>
+  </div>
+
+
+  <div *ngIf="filteredBills.length > 0; else noData">
+    <table class="bill-table">
+      <thead>
+      <tr>
+        <th (click)="toggleSort('billNumber')">Bill Number {{ getSortIcon('billNumber') }}</th>
+        <th (click)="toggleSort('billDate')">Bill Date {{ getSortIcon('billDate') }}</th>
+        <th>Billing Period</th>
+        <th (click)="toggleSort('dueDate')">Due Date {{ getSortIcon('dueDate') }}</th>
+        <th (click)="toggleSort('billAmount')">Amount {{ getSortIcon('billAmount') }}</th>
+        <th>Status</th>
+          <th (click)="toggleSort('paymentDate')">
+              PAYMENT DATE {{ getSortIcon('paymentDate') }}
+          </th>
+        <th>Mode</th>
+        <th>Download</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let bill of filteredBills">
+        <td>{{ bill.billNumber }}</td>
+        <td>{{ bill.billDate |date: 'yyyy-MM-dd'}}</td>
+        <td>{{ bill.billingPeriod }}</td>
+        <td>{{ bill.dueDate |date: 'yyyy-MM-dd'}}</td>
+        <td>{{ bill.billAmount | currency }}</td>
+        <td>
+            <span class="badge" [ngClass]="bill.paymentStatus.toLowerCase()">
+              {{ bill.paymentStatus }}
+            </span>
+        </td>
+        <td>{{ bill.paymentDate ? (bill.paymentDate | date: 'yyyy-MM-dd') : '-' }}</td>
+        <td>{{ bill.modeOfPayment || '-' }}</td>
+          <td>
+              <a
+                      *ngIf="bill.paymentStatus === 'Paid'"
+                      [href]="bill.pdfLink"
+                      target="_blank"
+                      class="text-blue-600 hover:underline"
+              >
+                  Download
+              </a>
+              <span
+                      *ngIf="bill.paymentStatus === 'Unpaid'"
+                      class="text-gray-400 cursor-not-allowed"
+              >
+    Download
+  </span>
+          </td>
+
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+    <ng-template #noData>
+        <div class="error text-center mt-4 font-semibold">
+    <span *ngIf="dateRangeError" class="text-red-600">
+       Range given is Invalid
+    </span>
+            <span *ngIf="!dateRangeError" class="text-gray-600">
+       No bills found for the selected range.
+    </span>
+        </div>
+    </ng-template>
+

@@ -1,0 +1,59 @@
+<div class="glass-card" *ngIf="!hasError; else errorTemplate">
+  <h2 class="section-heading">Bill Summary</h2>
+
+  <div class="table-wrapper">
+    <table>
+      <thead>
+      <tr>
+        <th>
+          <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAll()" />
+        </th>
+        <th>Consumer No</th>
+        <th>Bill Date</th>
+        <th>Billing Period</th>
+        <th>Due Date</th>
+        <th>Amount</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let bill of bills" [class.selected]="bill.selected">
+        <td>
+          <input type="checkbox" [(ngModel)]="bill.selected" (change)="updateSelection()" />
+        </td>
+        <td>{{ bill.consumerNo }}</td>
+        <td>{{ bill.billDate }}</td>
+        <td>{{ bill.billPeriod }}</td>
+        <td>{{ bill.dueDate }}</td>
+        <td>₹ {{ bill.dueAmount }}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="summary">
+    <span>Total: ₹ {{ totalAmount }}</span>
+  </div>
+
+  <div class="payment-method">
+    <label>
+      <input type="radio" name="payment" value="card" [(ngModel)]="selectedPaymentMethod" />
+      Credit/Debit Card
+    </label>
+  </div>
+
+  <div *ngIf="proceedError" class="error-msg">{{ proceedError }}</div>
+
+  <div class="buttons">
+    <button (click)="goBack()">Back</button>
+    <button [disabled]="!canProceed()" (click)="proceedToPayment()">Proceed to Payment</button>
+  </div>
+</div>
+
+<ng-template #errorTemplate>
+  <div class="error-container">
+    <h3>Failed to load bills.</h3>
+    <p>Please try again or go back.</p>
+    <button (click)="retry()">Retry</button>
+    <button (click)="goBack()">Go Back</button>
+  </div>
+</ng-template>

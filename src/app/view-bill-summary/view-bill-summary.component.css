@@ -1,0 +1,134 @@
+.container {
+  padding: 20px;
+  max-width: 900px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 10px;
+}
+
+thead {
+  background-color: #f4f4f4;
+}
+
+th, td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+tr.selected {
+  background-color: #e6f4ff;
+}
+
+tr:hover {
+  background-color: #d0ebff;
+}
+
+.summary {
+  font-size: 18px;
+  margin: 10px 0;
+  font-weight: bold;
+}
+
+.payment-method {
+  margin: 15px 0;
+}
+
+.payment-method label {
+  font-size: 16px;
+}
+
+.buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+
+button {
+  padding: 10px 18px;
+  font-size: 16px;
+  border: none;
+  background-color: #0077cc;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  background-color: #005fa3;
+}
+
+.error-msg {
+  color: red;
+  margin-top: 10px;
+}
+.glass-card {
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 30px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+  transition: all 0.3s ease;
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+section-heading {
+  text-align: center;
+  font-size: 2rem;
+  font-weight: 600;
+  color: #ffffff; /* Strong white */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4); /* Optional for more visibility */
+  margin-bottom: 30px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Center it within the parent container */
+.glass-card {
+  text-align: center;
+}
+
+/* Underline effect */
+.section-heading::after {
+  content: '';
+  display: block;
+  width: 60px;
+  height: 3px;
+  margin: 8px auto 0;
+  background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+  border-radius: 2px;
+  animation: underline-slide 1s ease-in-out;
+}
+
+/* Optional animation */
+@keyframes underline-slide {
+  from {
+    width: 0;
+    opacity: 0;
+  }
+  to {
+    width: 60px;
+    opacity: 1;
+  }
+}
+
