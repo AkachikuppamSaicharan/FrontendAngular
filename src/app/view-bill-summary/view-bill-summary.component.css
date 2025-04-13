@@ -131,5 +131,25 @@ section-heading {
     opacity: 1;
   }
 }
+.payment-method {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin: 20px 0;
+}
+
+.payment-method input[type="radio"] {
+  margin-right: 8px;
+  accent-color: black; /* Optional: adds subtle modern color */
+}
+
+.payment-method label {
+  font-size: 16px;
+  font-weight: 500;
+  color: black;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
 
 

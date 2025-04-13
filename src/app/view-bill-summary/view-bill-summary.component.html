@@ -35,10 +35,23 @@
   </div>
 
   <div class="payment-method">
-    <label>
-      <input type="radio" name="payment" value="card" [(ngModel)]="selectedPaymentMethod" />
-      Credit/Debit Card
-    </label>
+    <input
+      type="radio"
+      id="credit"
+      name="paymentMethod"
+      value="credit"
+      [(ngModel)]="selectedPaymentMethod"
+    />
+    <label for="credit">Credit Card</label>
+
+    <input
+      type="radio"
+      id="debit"
+      name="paymentMethod"
+      value="debit"
+      [(ngModel)]="selectedPaymentMethod"
+    />
+    <label for="debit">Debit Card</label>
   </div>
 
   <div *ngIf="proceedError" class="error-msg">{{ proceedError }}</div>
