@@ -27,62 +27,62 @@
     <table class="bill-table">
       <thead>
       <tr>
-        <th (click)="toggleSort('billNumber')">Bill Number {{ getSortIcon('billNumber') }}</th>
-        <th (click)="toggleSort('billDate')">Bill Date {{ getSortIcon('billDate') }}</th>
+        <th (click)="toggleSort('Bill_Number')">Bill Number {{ getSortIcon('Bill_Number') }}</th>
+        <th (click)="toggleSort('Bill_Date')">Bill Date {{ getSortIcon('Bill_Date') }}</th>
         <th>Billing Period</th>
-        <th (click)="toggleSort('dueDate')">Due Date {{ getSortIcon('dueDate') }}</th>
-        <th (click)="toggleSort('billAmount')">Amount {{ getSortIcon('billAmount') }}</th>
+        <th (click)="toggleSort('Due_Date')">Due Date {{ getSortIcon('Due_Date') }}</th>
+        <th (click)="toggleSort('Bill_Amount')">Amount {{ getSortIcon('Bill_Amount') }}</th>
         <th>Status</th>
-          <th (click)="toggleSort('paymentDate')">
-              PAYMENT DATE {{ getSortIcon('paymentDate') }}
-          </th>
+        <th (click)="toggleSort('Payment_Date')">
+          PAYMENT DATE {{ getSortIcon('Payment_Date') }}
+        </th>
         <th>Mode</th>
         <th>Download</th>
       </tr>
       </thead>
       <tbody>
       <tr *ngFor="let bill of filteredBills">
-        <td>{{ bill.billNumber }}</td>
-        <td>{{ bill.billDate |date: 'yyyy-MM-dd'}}</td>
-        <td>{{ bill.billingPeriod }}</td>
-        <td>{{ bill.dueDate |date: 'yyyy-MM-dd'}}</td>
-        <td>{{ bill.billAmount | currency }}</td>
+        <td>{{ bill.Bill_Number }}</td>
+        <td>{{ bill.Bill_Date|date: 'yyyy-MM-dd'}}</td>
+        <td>{{ bill.Billing_Period }}</td>
+        <td>{{ bill.Due_Date |date: 'yyyy-MM-dd'}}</td>
+        <td>{{ bill.Bill_Amount | currency:'INR' }}</td>
         <td>
-            <span class="badge" [ngClass]="bill.paymentStatus.toLowerCase()">
-              {{ bill.paymentStatus }}
+            <span class="badge" [ngClass]="bill.Payment_Status.toLowerCase()">
+              {{ bill.Payment_Status }}
             </span>
         </td>
-        <td>{{ bill.paymentDate ? (bill.paymentDate | date: 'yyyy-MM-dd') : '-' }}</td>
-        <td>{{ bill.modeOfPayment || '-' }}</td>
-          <td>
-              <a *ngIf="bill.paymentStatus === 'Paid'"
-                 (click)="generatePDF(bill)"
-                 class="download-link"
-                 style="cursor: pointer;">
-                  Download
-              </a>
+        <td>{{ bill.Payment_Date ? (bill.Payment_Date | date: 'yyyy-MM-dd') : '-' }}</td>
+        <td>{{ bill.Payment_Mode || '-' }}</td>
+        <td>
+          <a *ngIf="bill.Payment_Status === 'Paid'"
+             (click)="generatePDF(bill)"
+             class="download-link"
+             style="cursor: pointer;">
+            Download
+          </a>
 
-              <span
-                      *ngIf="bill.paymentStatus === 'Unpaid'"
-                      class="text-gray-400 cursor-not-allowed"
-              >
+          <span
+            *ngIf="bill.Payment_Status === 'Unpaid'"
+            class="text-gray-400 cursor-not-allowed"
+          >
     Download
   </span>
-          </td>
-
+        </td>
       </tr>
       </tbody>
     </table>
   </div>
-
+  <div>
     <ng-template #noData>
-        <div class="error text-center mt-4 font-semibold">
+      <div class="error text-center mt-4 font-semibold">
     <span *ngIf="dateRangeError" class="text-red-600">
        Range given is Invalid
     </span>
-            <span *ngIf="!dateRangeError" class="text-gray-600">
+        <span *ngIf="!dateRangeError" class="text-gray-600">
        No bills found for the selected range.
     </span>
-        </div>
+      </div>
     </ng-template>
+  </div>
 </div>

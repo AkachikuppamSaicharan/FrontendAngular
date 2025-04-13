@@ -3,18 +3,13 @@ import {CurrencyPipe, DatePipe, NgClass, NgForOf, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import * as jspdf from "jspdf";
 import jsPDF from "jspdf";
+import { CustomerDetails } from '../../model/customerDetails';
+import { DetailsService } from '../../service/details.service';
+import { History } from '../../model/History';
+import { GetBillsService } from '../../service/get-bills.service';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
-interface Bill {
-  billNumber: number;
-  billDate: string;
-  billingPeriod: string;
-  dueDate: string;
-  billAmount: number;
-  paymentStatus: 'Paid' | 'Unpaid';
-  paymentDate: string;
-  modeOfPayment: string;
-  pdfLink: string;
-}
 
 @Component({
   selector: 'app-bill-history',
@@ -30,52 +25,31 @@ interface Bill {
   styleUrls: ['./bill-history.component.css']
 })
 export class BillHistoryComponent implements OnInit {
-  allBills: Bill[] = [];
-  filteredBills: Bill[] = [];
 
+  allBills: History[] = [];
+  filteredBills: History[] = [];
+  customer!:CustomerDetails;
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   selectedStatusFilter: string = 'All';
-
+  constructor(private router:Router,private billService:GetBillsService,private detailService:DetailsService){}
   ngOnInit() {
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-
-    this.allBills = [
-      {
-        billNumber: 1001,
-        billDate: '2024-11-10',
-        billingPeriod: 'Oct 2024',
-        dueDate: '2024-11-25',
-        billAmount: 120.5,
-        paymentStatus: 'Paid',
-        paymentDate: '2024-11-15',
-        modeOfPayment: 'Credit Card',
-        pdfLink: '#'
-      },
-      {
-        billNumber: 1002,
-        billDate: '2024-12-10',
-        billingPeriod: 'Nov 2024',
-        dueDate: '2024-12-25',
-        billAmount: 130.75,
-        paymentStatus: 'Unpaid',
-        paymentDate: '',
-        modeOfPayment: '',
-        pdfLink: '#'
-      },
-      {
-        billNumber: 1003,
-        billDate: '2025-01-10',
-        billingPeriod: 'Dec 2024',
-        dueDate: '2025-01-25',
-        billAmount: 110.0,
-        paymentStatus: 'Paid',
-        paymentDate: '2025-01-20',
-        modeOfPayment: 'Net Banking',
-        pdfLink: '#'
+    this.customer=this.detailService.getcustomerDetails();
+    this.billService.getHistoryBills("Akach").subscribe({
+      next:(data:any)=>{
+        console.log(data);
+        console.log(data.length);
+        if(data && data.length>0){
+          this.allBills=data;
+          console.log(data)
+        }
+        else{
+          this.allBills=[];
+        }
       }
-    ];
+    })
 
     this.filterBills();
   }
@@ -84,14 +58,14 @@ export class BillHistoryComponent implements OnInit {
 
   filterBills() {
     this.filteredBills = this.allBills.filter(bill => {
-      const billDate = new Date(bill.billDate);
+      const billDate = new Date(bill.Bill_Date);
 
       const isWithinDateRange =
-          (!this.fromDate || billDate >= new Date(this.fromDate)) &&
-          (!this.toDate || billDate <= new Date(this.toDate));
+        (!this.fromDate || billDate >= new Date(this.fromDate)) &&
+        (!this.toDate || billDate <= new Date(this.toDate));
 
       const matchesStatus =
-          this.selectedStatusFilter === 'All' || bill.paymentStatus === this.selectedStatusFilter;
+        this.selectedStatusFilter === 'All' || bill.Payment_Status === this.selectedStatusFilter;
 
       return isWithinDateRange && matchesStatus;
     });
@@ -99,14 +73,7 @@ export class BillHistoryComponent implements OnInit {
     this.sortBills();
   }
 
-  customer = {
-    customerNumber: 'CUST123456',
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    mobileNumber: '+1 987-654-3210',
-    address: '123 Main Street, Springfield, IL 62704',
-    connectionType: 'Residential'
-  };
+
   onDateChange() {
     this.dateRangeError = false;
 
@@ -134,15 +101,15 @@ export class BillHistoryComponent implements OnInit {
     const dateFields = ['billDate', 'dueDate', 'paymentDate'];
 
     this.filteredBills.sort((a, b) => {
-      let aValue: any = a[this.sortColumn as keyof Bill];
-      let bValue: any = b[this.sortColumn as keyof Bill];
+      let aValue: any = a[this.sortColumn as keyof History];
+      let bValue: any = b[this.sortColumn as keyof History];
 
       if (dateFields.includes(this.sortColumn)) {
         const aDate = aValue ? new Date(aValue) : null;
         const bDate = bValue ? new Date(bValue) : null;
 
         // Special handling for paymentDate — only when filtered to "Paid"
-        if (this.sortColumn === 'paymentDate') {
+        if (this.sortColumn === 'Payment_Date') {
           if (this.selectedStatusFilter === 'Paid') {
             return (aDate!.getTime() - bDate!.getTime()) * direction;
           } else {
@@ -194,10 +161,11 @@ export class BillHistoryComponent implements OnInit {
     return this.sortDirection === 'asc' ? '▲' : '▼';
   }
   downloadAllPaidBills() {
-    const paidBills = this.filteredBills.filter(bill => bill.paymentStatus === 'Paid');
+    const paidBills = this.filteredBills.filter(bill => bill.Payment_Status === 'Paid');
 
     for (const bill of paidBills) {
       const link = document.createElement('a');
+      bill.pdfLink="#"
       link.href = bill.pdfLink;
       link.target = '_blank';
       link.download = ''; // You can set a filename here if needed
@@ -205,42 +173,84 @@ export class BillHistoryComponent implements OnInit {
     }
   }
   hasAnyPaidBills(): boolean {
-    return this.filteredBills.some(bill => bill.paymentStatus === 'Paid');
+    return this.filteredBills.some(bill => bill.Payment_Status === 'Paid');
   }
   formatDate(dateString: string): string {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB');
   }
-  generatePDF(bill: Bill) {
+  // generatePDF(bill: History) {
+  //   const doc = new jsPDF();
+  //
+  //   // Customer Details Block
+  //   doc.setFontSize(14);
+  //   doc.text('Customer Details', 10, 10);
+  //   doc.setFontSize(11);
+  //   doc.text(`Name: ${this.customer.name}`, 10, 30);
+  //   doc.text(`Email: ${this.customer.email}`, 10, 40);
+  //   doc.text(`Address: ${this.customer.address}`, 10, 60);
+  //   doc.text(`Connection Type: ${this.customer.customerType}`, 10, 70);
+  //
+  //   // Bill Details Block
+  //   doc.setFontSize(14);
+  //   doc.text('Bill Details', 10, 90);
+  //   doc.setFontSize(11);
+  //   doc.text(`Customer Number: ${bill.Customer_Number}`, 10, 20);
+  //   doc.text(`Bill Number: ${bill.Bill_Number}`, 10, 100);
+  //   doc.text(`Bill Date: ${bill.Bill_Date}`, 10, 110);
+  //   doc.text(`Billing Period: ${bill.Billing_Period}`, 10, 120);
+  //   doc.text(`Due Date: ${bill.Due_Date}`, 10, 130);
+  //   doc.text(`Bill Amount: ₹${bill.Bill_Amount}`, 10, 140);
+  //   doc.text(`Payment Status: ${bill.Payment_Status}`, 10, 150);
+  //   doc.text(`Payment Date: ${bill.Payment_Date || '-'}`, 10, 160);
+  //   doc.text(`Mode of Payment: ${bill.Payment_Mode|| '-'}`, 10, 170);
+  //
+  //   // Open in New Tab
+  //   const pdfBlob = doc.output('blob');
+  //   const blobUrl = URL.createObjectURL(pdfBlob);
+  //   window.open(blobUrl, '_blank');
+  // }
+  generatePDF(bill: History) {
     const doc = new jsPDF();
 
     // Customer Details Block
     doc.setFontSize(14);
     doc.text('Customer Details', 10, 10);
     doc.setFontSize(11);
-    doc.text(`Customer Number: ${this.customer.customerNumber}`, 10, 20);
     doc.text(`Name: ${this.customer.name}`, 10, 30);
     doc.text(`Email: ${this.customer.email}`, 10, 40);
     doc.text(`Address: ${this.customer.address}`, 10, 60);
-    doc.text(`Connection Type: ${this.customer.connectionType}`, 10, 70);
+    doc.text(`Connection Type: ${this.customer.customerType}`, 10, 70);
 
     // Bill Details Block
     doc.setFontSize(14);
     doc.text('Bill Details', 10, 90);
     doc.setFontSize(11);
-    doc.text(`Bill Number: ${bill.billNumber}`, 10, 100);
-    doc.text(`Bill Date: ${bill.billDate}`, 10, 110);
-    doc.text(`Billing Period: ${bill.billingPeriod}`, 10, 120);
-    doc.text(`Due Date: ${bill.dueDate}`, 10, 130);
-    doc.text(`Bill Amount: ₹${bill.billAmount}`, 10, 140);
-    doc.text(`Payment Status: ${bill.paymentStatus}`, 10, 150);
-    doc.text(`Payment Date: ${bill.paymentDate || '-'}`, 10, 160);
-    doc.text(`Mode of Payment: ${bill.modeOfPayment || '-'}`, 10, 170);
+    doc.text(`Customer Number: ${bill.Customer_Number}`, 10, 20);
+    doc.text(`Bill Number: ${bill.Bill_Number}`, 10, 100);
+    doc.text(`Bill Date: ${bill.Bill_Date}`, 10, 110);
+    doc.text(`Billing Period: ${bill.Billing_Period}`, 10, 120);
+    doc.text(`Due Date: ${bill.Due_Date}`, 10, 130);
+    doc.text(`Bill Amount: ₹${bill.Bill_Amount}`, 10, 140);
+    doc.text(`Payment Status: ${bill.Payment_Status}`, 10, 150);
+    doc.text(`Payment Date: ${bill.Payment_Date || '-'}`, 10, 160);
+    doc.text(`Mode of Payment: ${bill.Payment_Mode || '-'}`, 10, 170);
 
-    // Open in New Tab
-    const pdfBlob = doc.output('blob');
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    window.open(blobUrl, '_blank');
+    // Generate PDF as blob
+    const blob = doc.output('blob');
+    const blobUrl = URL.createObjectURL(blob);
+
+    // Open in new tab safely
+    const newTab = window.open('', '_blank');
+    if (newTab) {
+      newTab.document.write(
+        `<html><head><title>Bill PDF</title></head><body style="margin:0">
+       <iframe width="100%" height="100%" src="${blobUrl}" frameborder="0"></iframe>
+       </body></html>`
+      );
+    } else {
+      alert('Popup blocked. Please allow popups for this website.');
+    }
   }
 
 

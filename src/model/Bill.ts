@@ -1,17 +1,17 @@
 export interface Bill {
-  consumerNo: string;
-  billNumber: string;
-  paymentStatus: string;
-  connectionType: string;
-  connectionStatus: string;
-  mobileNumber: string;
-  billPeriod: string;
-  billDate: string;
-  dueDate: string;
-  disconnectionDate: string;
-  dueAmount: number;
-  payableAmount?: number | null;
-  selected: boolean;
-  errorMessage?: string;
-
-}
+   Consumer_Number: number;
+   BillNumber: number;
+   Payment_Status: string;
+   Connection_Type: string;
+   Connection_Status: string;
+   Mobile_Number:number;
+    Bill_Date: string;
+    Bill_Period: string;
+    Due_Date: string;
+    Disconnection_Date: string;
+    Due_Amount: number;
+    payableAmount?: number | null;
+    selected?: boolean;
+    errorMessage?: string;
+  }
+  

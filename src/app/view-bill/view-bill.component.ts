@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
 import {BillSelectionService} from '../../service/bill-selection.service';
 import {Bill} from '../../model/Bill';
-
+import { GetBillsService } from '../../service/get-bills.service';
 @Component({
   selector: 'app-view-bills',
   templateUrl: './view-bill.component.html',
@@ -13,53 +13,34 @@ import {Bill} from '../../model/Bill';
   imports: [FormsModule, CurrencyPipe, NgIf, NgForOf]
 })
 export class ViewBillsComponent {
-  bills: Bill[] = [
-    {
-      consumerNo: 'C001',
-      billNumber: 'B1001',
-      paymentStatus: 'Unpaid',
-      connectionType: 'Domestic',
-      connectionStatus: 'Connected',
-      mobileNumber: '9876543210',
-      billPeriod: 'Jan-Feb',
-      billDate: '2025-03-01',
-      dueDate: '2025-03-15',
-      disconnectionDate: '2025-03-20',
-      dueAmount: 1200,
-      payableAmount: null,
-      selected: false,
-      errorMessage: ''
-    },
-    {
-      consumerNo: 'C002',
-      billNumber: 'B1002',
-      paymentStatus: 'Unpaid',
-      connectionType: 'Commercial',
-      connectionStatus: 'Disconnected',
-      mobileNumber: '9123456780',
-      billPeriod: 'Feb-Mar',
-      billDate: '2025-03-05',
-      dueDate: '2025-03-18',
-      disconnectionDate: '2025-03-25',
-      dueAmount: 1600,
-      payableAmount: null,
-      selected: false,
-      errorMessage: ''
-    }
-  ];
-
+  User_Id:string="Akach";
+  bills:Bill[]=[];
   selectAll: boolean = false;
   totalPayableAmount: number = 0;
   proceedError: string = '';
 
-  constructor(private router: Router,private billService:BillSelectionService) {}
-
+  constructor(private router: Router,private billService:BillSelectionService,private seeBills:GetBillsService) {}
+  ngOnInit():void{
+    this.seeBills.getBills(this.User_Id).subscribe({
+      next:(data:any)=>{
+        console.log(data);
+        console.log(data.length);
+        if(data && data.length>0){
+          this.bills=data;
+          console.log(data)
+        }
+        else{
+          this.bills=[];
+        }
+      }
+    })
+  }
 
   toggleAllSelection() {
     if (this.selectAll) {
       // Select all only if each bill is valid
       this.bills.forEach(bill => {
-        bill.payableAmount = bill.dueAmount;
+        bill.payableAmount = bill.Due_Amount;
         bill.selected = true;
         bill.errorMessage = '';
       });
@@ -96,10 +77,10 @@ export class ViewBillsComponent {
     } else if (amt < 0) {
       bill.errorMessage = 'Amount cannot be negative';
       bill.selected = false;
-    } else if (amt > bill.dueAmount) {
+    } else if (amt > bill.Due_Amount) {
       bill.errorMessage = 'Amount exceeds due amount';
       bill.selected = false;
-    } else if (amt < bill.dueAmount) {
+    } else if (amt < bill.Due_Amount) {
       bill.errorMessage = 'Partial payment not allowed';
       bill.selected = false;
     } else {
@@ -121,7 +102,7 @@ export class ViewBillsComponent {
 
   updateTotalAmount() {
     this.totalPayableAmount = this.bills
-      .filter(bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.dueAmount))
+      .filter(bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount))
       .reduce((total, bill) => total + bill.payableAmount!, 0);
   }
 
@@ -149,7 +130,7 @@ export class ViewBillsComponent {
   proceedToPay() {
     this.proceedError = '';
     const validBills = this.bills.filter(
-      bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.dueAmount)
+      bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
     );
 
     if (validBills.length === 0) {
@@ -157,7 +138,7 @@ export class ViewBillsComponent {
       return;
     }
 
-    const totalDue = validBills.reduce((sum, bill) => sum + bill.dueAmount, 0);
+    const totalDue = validBills.reduce((sum, bill) => sum + bill.Due_Amount, 0);
     const totalPayable = validBills.reduce((sum, bill) => sum + bill.payableAmount!, 0);
 
     if (totalDue !== totalPayable) {
@@ -167,7 +148,7 @@ export class ViewBillsComponent {
 
     this.billService.setSelectedBills(validBills); // ✅ Save to service
     this.router.navigate(['view-billsummary'],{
-      replaceUrl: true
+
     });
   }
 
@@ -179,7 +160,7 @@ export class ViewBillsComponent {
         bill.payableAmount === undefined ||
         bill.payableAmount === 0
       ) {
-        bill.payableAmount = bill.dueAmount;
+        bill.payableAmount = bill.Due_Amount;
       }
 
       // Validate amount on selection
@@ -196,7 +177,7 @@ export class ViewBillsComponent {
 
   syncSelectAll() {
     const allChecked = this.bills.every(
-      bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.dueAmount)
+      bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
     );
     this.selectAll = allChecked;
   }

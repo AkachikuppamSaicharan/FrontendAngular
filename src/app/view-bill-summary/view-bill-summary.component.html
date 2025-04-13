@@ -20,11 +20,11 @@
         <td>
           <input type="checkbox" [(ngModel)]="bill.selected" (change)="updateSelection()" />
         </td>
-        <td>{{ bill.consumerNo }}</td>
-        <td>{{ bill.billDate }}</td>
-        <td>{{ bill.billPeriod }}</td>
-        <td>{{ bill.dueDate }}</td>
-        <td>₹ {{ bill.dueAmount }}</td>
+        <td>{{ bill.Consumer_Number }}</td>
+        <td>{{ bill.Bill_Date }}</td>
+        <td>{{ bill.Bill_Period }}</td>
+        <td>{{ bill.Due_Date }}</td>
+        <td>₹ {{ bill.Due_Amount }}</td>
       </tr>
       </tbody>
     </table>
@@ -57,3 +57,4 @@
     <button (click)="goBack()">Go Back</button>
   </div>
 </ng-template>
+

@@ -30,17 +30,17 @@
           (change)="onCheckboxChange(bill)"
         />
       </td>
-      <td>{{ bill.consumerNo }}</td>
-      <td>{{ bill.billNumber }}</td>
-      <td>{{ bill.paymentStatus }}</td>
-      <td>{{ bill.connectionType }}</td>
-      <td>{{ bill.connectionStatus }}</td>
-      <td>{{ bill.mobileNumber }}</td>
-      <td>{{ bill.billPeriod }}</td>
-      <td>{{ bill.billDate }}</td>
-      <td>{{ bill.dueDate }}</td>
-      <td>{{ bill.disconnectionDate }}</td>
-      <td>{{ bill.dueAmount | currency:'INR' }}</td>
+      <td>{{ bill.Consumer_Number }}</td>
+      <td>{{ bill.BillNumber }}</td>
+      <td>{{ bill.Payment_Status }}</td>
+      <td>{{ bill.Connection_Type }}</td>
+      <td>{{ bill.Connection_Status }}</td>
+      <td>{{ bill.Mobile_Number }}</td>
+      <td>{{ bill.Bill_Period }}</td>
+      <td>{{ bill.Bill_Date }}</td>
+      <td>{{ bill.Due_Date }}</td>
+      <td>{{ bill.Disconnection_Date }}</td>
+      <td>{{ bill.Due_Amount | currency:'INR' }}</td>
       <td>
         <input
           type="number"
@@ -63,4 +63,5 @@
       <button (click)="proceedToPay()">Proceed to Pay</button>
     </div>
   </div>
+
 

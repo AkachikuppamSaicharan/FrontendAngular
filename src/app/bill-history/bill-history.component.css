@@ -30,6 +30,7 @@ select {
   width: 100%;
   border-collapse: collapse;
   font-size: 15px;
+  border:1px solid black;
 }
 
 .bill-table th, .bill-table td {
@@ -192,3 +193,4 @@ h2:hover::after {
 .download-link:hover {
   text-decoration: underline;
 }
+
