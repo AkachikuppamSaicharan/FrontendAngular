@@ -7,7 +7,7 @@ import { CustomerDetails } from '../../model/customerDetails';
 import { DetailsService } from '../../service/details.service';
 import { History } from '../../model/History';
 import { GetBillsService } from '../../service/get-bills.service';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
 
@@ -20,12 +20,13 @@ import { HttpClient } from '@angular/common/http';
     NgClass,
     NgForOf,
     FormsModule,
-    DatePipe
+    DatePipe,
+    RouterLink
   ],
   styleUrls: ['./bill-history.component.css']
 })
 export class BillHistoryComponent implements OnInit {
-
+  names!:string;
   allBills: History[] = [];
   filteredBills: History[] = [];
   customer!:CustomerDetails;
@@ -34,10 +35,11 @@ export class BillHistoryComponent implements OnInit {
   selectedStatusFilter: string = 'All';
   constructor(private router:Router,private billService:GetBillsService,private detailService:DetailsService){}
   ngOnInit() {
+    this.names=this.detailService.getCustomerDetails().userID;
     const sixMonthsAgo = new Date();
     sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    this.customer=this.detailService.getcustomerDetails();
-    this.billService.getHistoryBills("Akach").subscribe({
+    this.customer=this.detailService.getCustomerDetails();
+    this.billService.getHistoryBills(this.names).subscribe({
       next:(data:any)=>{
         console.log(data);
         console.log(data.length);
@@ -179,37 +181,10 @@ export class BillHistoryComponent implements OnInit {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-GB');
   }
-  // generatePDF(bill: History) {
-  //   const doc = new jsPDF();
-  //
-  //   // Customer Details Block
-  //   doc.setFontSize(14);
-  //   doc.text('Customer Details', 10, 10);
-  //   doc.setFontSize(11);
-  //   doc.text(`Name: ${this.customer.name}`, 10, 30);
-  //   doc.text(`Email: ${this.customer.email}`, 10, 40);
-  //   doc.text(`Address: ${this.customer.address}`, 10, 60);
-  //   doc.text(`Connection Type: ${this.customer.customerType}`, 10, 70);
-  //
-  //   // Bill Details Block
-  //   doc.setFontSize(14);
-  //   doc.text('Bill Details', 10, 90);
-  //   doc.setFontSize(11);
-  //   doc.text(`Customer Number: ${bill.Customer_Number}`, 10, 20);
-  //   doc.text(`Bill Number: ${bill.Bill_Number}`, 10, 100);
-  //   doc.text(`Bill Date: ${bill.Bill_Date}`, 10, 110);
-  //   doc.text(`Billing Period: ${bill.Billing_Period}`, 10, 120);
-  //   doc.text(`Due Date: ${bill.Due_Date}`, 10, 130);
-  //   doc.text(`Bill Amount: ₹${bill.Bill_Amount}`, 10, 140);
-  //   doc.text(`Payment Status: ${bill.Payment_Status}`, 10, 150);
-  //   doc.text(`Payment Date: ${bill.Payment_Date || '-'}`, 10, 160);
-  //   doc.text(`Mode of Payment: ${bill.Payment_Mode|| '-'}`, 10, 170);
-  //
-  //   // Open in New Tab
-  //   const pdfBlob = doc.output('blob');
-  //   const blobUrl = URL.createObjectURL(pdfBlob);
-  //   window.open(blobUrl, '_blank');
-  // }
+  logout():void{
+    this.detailService.clearAll();
+    this.router.navigate(['']);
+  }
   generatePDF(bill: History) {
     const doc = new jsPDF();
 

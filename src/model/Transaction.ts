@@ -1,10 +1,10 @@
 export interface Transaction{
-    paymentId:string;
-    transactionId:string;
-    receiptNumber:string;
+    paymentid:string;
+    tid:string;
+    receiptnumber:string;
     date:string;
     type:string;
-    billNumber:string;
+    billnumbers?:string;
     amount:number;
     status:string;
     userid:string;

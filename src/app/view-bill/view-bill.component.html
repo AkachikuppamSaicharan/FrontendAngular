@@ -1,67 +1,95 @@
-<div class="container">
-  <h2>View / Pay Bills</h2>
-
-  <table>
-    <thead>
-    <tr>
-      <th>
-        <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllSelection()" />
-      </th>
-      <th>Consumer No</th>
-      <th>Bill Number</th>
-      <th>Payment Status</th>
-      <th>Connection Type</th>
-      <th>Connection Status</th>
-      <th>Mobile Number</th>
-      <th>Bill Period</th>
-      <th>Bill Date</th>
-      <th>Due Date</th>
-      <th>Disconnection Date</th>
-      <th>Due Amount</th>
-      <th>Payable Amount</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr *ngFor="let bill of bills" [class.checked-row]="bill.selected">
-      <td>
-        <input
-          type="checkbox"
-          [(ngModel)]="bill.selected"
-          (change)="onCheckboxChange(bill)"
-        />
-      </td>
-      <td>{{ bill.Consumer_Number }}</td>
-      <td>{{ bill.BillNumber }}</td>
-      <td>{{ bill.Payment_Status }}</td>
-      <td>{{ bill.Connection_Type }}</td>
-      <td>{{ bill.Connection_Status }}</td>
-      <td>{{ bill.Mobile_Number }}</td>
-      <td>{{ bill.Bill_Period }}</td>
-      <td>{{ bill.Bill_Date }}</td>
-      <td>{{ bill.Due_Date }}</td>
-      <td>{{ bill.Disconnection_Date }}</td>
-      <td>{{ bill.Due_Amount | currency:'INR' }}</td>
-      <td>
-        <input
-          type="number"
-          [(ngModel)]="bill.payableAmount"
-          (input)="handlePayableChange(bill)"
-          [disabled]="!bill.selected"
-        />
-        <div class="error" *ngIf="bill.errorMessage">{{ bill.errorMessage }}</div>
-      </td>
-    </tr>
-    </tbody>
-  </table>
-
-  <div class="summary">
-    <div class="summary-left">
-      <div class="error" *ngIf="proceedError">{{ proceedError }}</div>
+<div class="wrapper">
+<header class="header">
+  <nav class="navbar">
+    <div class="navbar-brand">Electricity Management Portal</div>
+    <div class="navbar-links">
+      <a class="nav-link" routerLink="/Homepage">Home</a>
+      <a class="nav-link" routerLink="/BillHistory">View Bills</a>
+      <a class="nav-link" routerLink="/PayBill">Pay Bill</a>
+      <a class="nav-link" routerLink="/">Complaint</a>
     </div>
-    <div class="summary-right">
-      <p>Total Payable Amount: {{ totalPayableAmount | currency:'INR':'symbol' }}</p>
-      <button (click)="proceedToPay()">Proceed to Pay</button>
+    <div class="navbar-user">
+      <span class="fw-bold">Welcome, {{this.names}}</span>
+      <button type="submit" (click)="logout()">Logout</button>
     </div>
+  </nav>
+</header>
+  <div class="container">
+    <h2>View / Pay Bills</h2>
+
+    <!-- Display "No Pending Bills" if bills are empty -->
+    <div *ngIf="bills.length === 0; else billTable">
+      <p class="no-bills-message">No Pending Bills</p>
+    </div>
+
+    <!-- Table to show bills when available -->
+    <ng-template #billTable>
+      <table>
+        <thead>
+        <tr>
+          <th>
+            <input type="checkbox" [(ngModel)]="selectAll" (change)="toggleAllSelection()" />
+          </th>
+          <th>Consumer No</th>
+          <th>Bill Number</th>
+          <th>Payment Status</th>
+          <th>Connection Type</th>
+          <th>Connection Status</th>
+          <th>Mobile Number</th>
+          <th>Bill Period</th>
+          <th>Bill Date</th>
+          <th>Due Date</th>
+          <th>Disconnection Date</th>
+          <th>Due Amount</th>
+          <th>Payable Amount</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let bill of bills" [class.checked-row]="bill.selected">
+          <td>
+            <input
+              type="checkbox"
+              [(ngModel)]="bill.selected"
+              (change)="onCheckboxChange(bill)"
+            />
+          </td>
+          <td>{{ bill.Consumer_Number }}</td>
+          <td>{{ bill.BillNumber }}</td>
+          <td>{{ bill.Payment_Status }}</td>
+          <td>{{ bill.Connection_Type }}</td>
+          <td>{{ bill.Connection_Status }}</td>
+          <td>{{ bill.Mobile_Number }}</td>
+          <td>{{ bill.Bill_Period }}</td>
+          <td>{{ bill.Bill_Date }}</td>
+          <td>{{ bill.Due_Date }}</td>
+          <td>{{ bill.Disconnection_Date }}</td>
+          <td>{{ bill.Due_Amount | currency:'INR' }}</td>
+          <td>
+            <input
+              type="number"
+              [(ngModel)]="bill.payableAmount"
+              (input)="handlePayableChange(bill)"
+              [disabled]="!bill.selected"
+            />
+            <div class="error" *ngIf="bill.errorMessage">{{ bill.errorMessage }}</div>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+
+      <div class="summary">
+        <div class="summary-left">
+          <div class="error" *ngIf="proceedError">{{ proceedError }}</div>
+        </div>
+        <div class="summary-right">
+          <p>Total Payable Amount: {{ totalPayableAmount | currency:'INR':'symbol' }}</p>
+          <button [disabled]="!isProceedEnabled()" (click)="proceedToPay()">Proceed to Pay</button>
+        </div>
+      </div>
+    </ng-template>
   </div>
 
-
+  <footer class="footer">
+  <h3>© 2025 Electricity Management Portal. All rights reserved.</h3>
+</footer>
+</div>

@@ -5,14 +5,22 @@ import {ViewBillSummaryComponent} from './view-bill-summary/view-bill-summary.co
 import { BillHistoryComponent } from './bill-history/bill-history.component';
 import { PaymentsPageComponent } from './payments-page/payments-page.component';
 import { InvoiceGenComponent } from './invoice-gen/invoice-gen.component';
+import {MainPageComponent} from './main-page/main-page.component';
+import {CustomerLoginComponent} from './customer-login/customer-login.component';
+import {HomepageComponent} from './homepage/homepage.component';
+import {CustomerRegistrationComponent} from './customer-registration/customer-registration.component';
+import {AuthGuard} from '../service/auth.guard';
 
 const routes: Routes = [
-  { path: '', component: ViewBillsComponent},
-  { path: 'view-billsummary', component: ViewBillSummaryComponent},
-  { path:'view-billhistory',component:BillHistoryComponent},
-  {path:'Pay',component:PaymentsPageComponent},
-
-  {path:'Invoice',component:InvoiceGenComponent}
+  { path: '', component: MainPageComponent },
+  {path:'Customer-Login', component: CustomerLoginComponent},
+  {path:'Homepage',component:HomepageComponent,canActivate:[AuthGuard]},
+  {path:'Registration',component:CustomerRegistrationComponent},
+  {path:'PayBill',component:ViewBillsComponent,canActivate:[AuthGuard]},
+  {path:'PayBillSummary',component:ViewBillSummaryComponent,canActivate:[AuthGuard]},
+  {path:'Payments',component:PaymentsPageComponent,canActivate:[AuthGuard]},
+  {path:'Invoice',component:InvoiceGenComponent,canActivate:[AuthGuard]},
+  {path:'BillHistory',component:BillHistoryComponent,canActivate:[AuthGuard]},
 ];
 
 @NgModule({

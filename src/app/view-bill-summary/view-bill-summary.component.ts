@@ -22,7 +22,7 @@ export class ViewBillSummaryComponent {
     this.bills=this.billService.getSelectedBills();
     if (!this.bills || this.bills.length === 0 || this.totalAmount <= 0) {
       alert("Unauthorized Access to this Page Using Url is not a Good Practice! Redirecting to Bills Page");
-      this.router.navigate(['']);
+      this.router.navigate(['PayBill']);
       return;
     }
   }
@@ -64,12 +64,12 @@ export class ViewBillSummaryComponent {
     this.billService.setPaymentMode(this.selectedPaymentMethod);
     console.log(this.billService.getTotalAmount());
     alert(`Proceeding with ${selectedBills.length} bill(s) using ${this.selectedPaymentMethod}`);
-    this.router.navigate(['Pay']);
+    this.router.navigate(['Payments']);
     // Continue logic here...
   }
 
   goBack() {
-    this.router.navigate(['']); // adjust as needed
+    this.router.navigate(['PayBill']); // adjust as needed
   }
 
   retry() {

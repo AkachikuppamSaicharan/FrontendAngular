@@ -1,88 +1,150 @@
-<div class="container">
-  <h2>Bill History</h2>
 
-  <div class="controls">
-    <label>
-      From:
-      <input type="date" [(ngModel)]="fromDate" (change)="onDateChange()" />
-    </label>
+<!-- <div class="wrapper">
+    <header class="header">
+        <div class="d-flex">
 
-    <label>
-      To:
-      <input type="date" [(ngModel)]="toDate" (change)="onDateChange()" />
-    </label>
+            <div class="bg-dark sidebar">
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/HomePage">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Pay-Bills">View Bills</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Bill-History">Pay Bill</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Complaint">Complaint</a>
+                </div>
+            </div>
 
-    <label>
-      Status:
-      <select [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange($event)">
-        <option>All</option>
-        <option>Paid</option>
-        <option>Unpaid</option>
-      </select>
-    </label>
-  </div>
+            <div class="flex-grow-1 bg-light topbar">
+                <span class="fw-bold">Welcome, {{name}}</span>
+                <button type="submit" (click)="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="mainarea">
+            <p class="p-tag">Electricity Management</p>
+            <h3>Smart electricity use isn't just good for your bill</h3>
+            <h3>It's good for the planet.</h3>
+            <h3>Let's power up with purpose and responsibility.</h3>
+        </div>
+        <div class="mainarea1">
+            <img class="full-image" src="assets/images/home_image.jpg" alt="Dynamic Image">
+        </div>
+    </main>
+    <footer class="footer">
+        <h3>© 2025 Electricity Management Portal. All rights reserved.</h3>
+    </footer>
+</div> -->
+<div class="wrapper">
+  <header class="header">
+    <nav class="navbar">
+      <div class="navbar-brand">Electricity Management Portal</div>
+      <div class="navbar-links">
+        <a class="nav-link" routerLink="/Homepage">Home</a>
+        <a class="nav-link" routerLink="/BillHistory">View Bills</a>
+        <a class="nav-link" routerLink="/PayBill">Pay Bill</a>
+        <a class="nav-link" routerLink="/">Complaint</a>
+      </div>
+      <div class="navbar-user">
+        <span class="fw-bold">Welcome, {{this.names}}</span>
+        <button type="submit" (click)="logout()">Logout</button>
+      </div>
+    </nav>
+  </header>
+  <div class="container">
+    <h2>Bill History</h2>
+
+    <div class="controls">
+      <label>
+        From:
+        <input type="date" [(ngModel)]="fromDate" (change)="onDateChange()" />
+      </label>
+
+      <label>
+        To:
+        <input type="date" [(ngModel)]="toDate" (change)="onDateChange()" />
+      </label>
+
+      <label>
+        Status:
+        <select [(ngModel)]="selectedStatusFilter" (ngModelChange)="onStatusFilterChange($event)">
+          <option>All</option>
+          <option>Paid</option>
+          <option>Unpaid</option>
+        </select>
+      </label>
+    </div>
 
 
-  <div *ngIf="filteredBills.length > 0; else noData">
-    <table class="bill-table">
-      <thead>
-      <tr>
-        <th (click)="toggleSort('Bill_Number')">Bill Number {{ getSortIcon('Bill_Number') }}</th>
-        <th (click)="toggleSort('Bill_Date')">Bill Date {{ getSortIcon('Bill_Date') }}</th>
-        <th>Billing Period</th>
-        <th (click)="toggleSort('Due_Date')">Due Date {{ getSortIcon('Due_Date') }}</th>
-        <th (click)="toggleSort('Bill_Amount')">Amount {{ getSortIcon('Bill_Amount') }}</th>
-        <th>Status</th>
-        <th (click)="toggleSort('Payment_Date')">
-          PAYMENT DATE {{ getSortIcon('Payment_Date') }}
-        </th>
-        <th>Mode</th>
-        <th>Download</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let bill of filteredBills">
-        <td>{{ bill.Bill_Number }}</td>
-        <td>{{ bill.Bill_Date|date: 'yyyy-MM-dd'}}</td>
-        <td>{{ bill.Billing_Period }}</td>
-        <td>{{ bill.Due_Date |date: 'yyyy-MM-dd'}}</td>
-        <td>{{ bill.Bill_Amount | currency:'INR' }}</td>
-        <td>
+    <div *ngIf="filteredBills.length > 0; else noData">
+      <table class="bill-table">
+        <thead>
+        <tr>
+          <th (click)="toggleSort('Bill_Number')">Bill Number {{ getSortIcon('Bill_Number') }}</th>
+          <th (click)="toggleSort('Bill_Date')">Bill Date {{ getSortIcon('Bill_Date') }}</th>
+          <th>Billing Period</th>
+          <th (click)="toggleSort('Due_Date')">Due Date {{ getSortIcon('Due_Date') }}</th>
+          <th (click)="toggleSort('Bill_Amount')">Amount {{ getSortIcon('Bill_Amount') }}</th>
+          <th>Status</th>
+          <th (click)="toggleSort('Payment_Date')">
+            PAYMENT DATE {{ getSortIcon('Payment_Date') }}
+          </th>
+          <th>Mode</th>
+          <th>Download</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let bill of filteredBills">
+          <td>{{ bill.Bill_Number }}</td>
+          <td>{{ bill.Bill_Date|date: 'yyyy-MM-dd'}}</td>
+          <td>{{ bill.Billing_Period }}</td>
+          <td>{{ bill.Due_Date |date: 'yyyy-MM-dd'}}</td>
+          <td>{{ bill.Bill_Amount | currency:'INR' }}</td>
+          <td>
             <span class="badge" [ngClass]="bill.Payment_Status.toLowerCase()">
               {{ bill.Payment_Status }}
             </span>
-        </td>
-        <td>{{ bill.Payment_Date ? (bill.Payment_Date | date: 'yyyy-MM-dd') : '-' }}</td>
-        <td>{{ bill.Payment_Mode || '-' }}</td>
-        <td>
-          <a *ngIf="bill.Payment_Status === 'Paid'"
-             (click)="generatePDF(bill)"
-             class="download-link"
-             style="cursor: pointer;">
-            Download
-          </a>
+          </td>
+          <td>{{ bill.Payment_Date ? (bill.Payment_Date | date: 'yyyy-MM-dd') : '-' }}</td>
+          <td>{{ bill.Payment_Mode || '-' }}</td>
+          <td>
+            <a *ngIf="bill.Payment_Status === 'Paid'"
+               (click)="generatePDF(bill)"
+               class="download-link"
+               style="cursor: pointer;">
+              Download
+            </a>
 
-          <span
-            *ngIf="bill.Payment_Status === 'Unpaid'"
-            class="text-gray-400 cursor-not-allowed"
-          >
+            <span
+              *ngIf="bill.Payment_Status === 'Unpaid'"
+              class="text-gray-400 cursor-not-allowed"
+            >
     Download
   </span>
-        </td>
-      </tr>
-      </tbody>
-    </table>
-  </div>
-  <div>
-    <ng-template #noData>
-      <div class="error text-center mt-4 font-semibold">
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <div>
+      <ng-template #noData>
+        <div class="error text-center mt-4 font-semibold">
     <span *ngIf="dateRangeError" class="text-red-600">
        Range given is Invalid
     </span>
-        <span *ngIf="!dateRangeError" class="text-gray-600">
+          <span *ngIf="!dateRangeError" class="text-gray-600">
        No bills found for the selected range.
     </span>
-      </div>
-    </ng-template>
+        </div>
+      </ng-template>
+    </div>
   </div>
+  <footer class="footer">
+    <h3>© 2025 Electricity Management Portal. All rights reserved.</h3>
+  </footer>
 </div>
+

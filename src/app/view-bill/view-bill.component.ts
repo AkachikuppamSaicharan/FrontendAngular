@@ -1,26 +1,30 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CurrencyPipe, NgForOf, NgIf } from '@angular/common';
 import {BillSelectionService} from '../../service/bill-selection.service';
 import {Bill} from '../../model/Bill';
 import { GetBillsService } from '../../service/get-bills.service';
+import {DetailsService} from '../../service/details.service';
 @Component({
   selector: 'app-view-bills',
   templateUrl: './view-bill.component.html',
   styleUrls: ['./view-bill.component.css'],
   standalone: true,
-  imports: [FormsModule, CurrencyPipe, NgIf, NgForOf]
+  imports: [FormsModule, CurrencyPipe, NgIf, NgForOf, RouterLink]
 })
 export class ViewBillsComponent {
-  User_Id:string="Akach";
+  constructor(private router: Router,private billService:BillSelectionService,private seeBills:GetBillsService,private detailService:DetailsService) {}
+  User_Id!:string;
   bills:Bill[]=[];
   selectAll: boolean = false;
   totalPayableAmount: number = 0;
   proceedError: string = '';
+  names!:string
 
-  constructor(private router: Router,private billService:BillSelectionService,private seeBills:GetBillsService) {}
   ngOnInit():void{
+    this.names=this.detailService.getCustomerDetails().name;
+    this.User_Id=this.detailService.getCustomerDetails().userID;
     this.seeBills.getBills(this.User_Id).subscribe({
       next:(data:any)=>{
         console.log(data);
@@ -147,7 +151,7 @@ export class ViewBillsComponent {
     }
 
     this.billService.setSelectedBills(validBills); // ✅ Save to service
-    this.router.navigate(['view-billsummary'],{
+    this.router.navigate(['PayBillSummary'],{
 
     });
   }
@@ -181,4 +185,13 @@ export class ViewBillsComponent {
     );
     this.selectAll = allChecked;
   }
+  isProceedEnabled(): boolean {
+    // Check if there is at least one bill selected with a valid payable amount
+    return this.bills.some(bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount));
+  }
+  logout():void{
+    this.detailService.clearAll();
+    this.router.navigate(['']);
+  }
+
 }

@@ -1,1 +1,2 @@
 <router-outlet></router-outlet>
+<app-session-warning *ngIf="sessionService.isSessionActive()"></app-session-warning>

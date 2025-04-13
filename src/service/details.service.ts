@@ -1,20 +1,46 @@
 import { Injectable } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
 import { CustomerDetails } from '../model/customerDetails';
+
 @Injectable({
   providedIn: 'root'
 })
 export class DetailsService {
-  private customerDetails!:CustomerDetails;
+  private customerDetails: CustomerDetails = {
+    name: '',
+    userID: '',
+    address: '',
+    customerType: '',
+    email: '',
+    mobile: 0
+  };
 
-  setCustomerDetails(ele:CustomerDetails){
-    this.customerDetails=ele;
+  private storageKey = 'customerDetails';
+
+  constructor() {
+    const storedData = localStorage.getItem(this.storageKey);
+    if (storedData) {
+      this.customerDetails = JSON.parse(storedData);
+    }
   }
-  getcustomerDetails():CustomerDetails{
+
+  setCustomerDetails(details: CustomerDetails): void {
+    this.customerDetails = details;
+    localStorage.setItem(this.storageKey, JSON.stringify(details));
+  }
+
+  getCustomerDetails(): CustomerDetails {
     return this.customerDetails;
   }
-  // clearAll(){
-  //   this.customerDetails={name:'', userID:'',address:'',customerType:''};
-  // }
-  constructor() { }
+
+  clearAll(): void {
+    this.customerDetails = {
+      name: '',
+      userID: '',
+      address: '',
+      customerType: '',
+      email: '',
+      mobile: 0
+    };
+    localStorage.removeItem(this.storageKey);
+  }
 }
