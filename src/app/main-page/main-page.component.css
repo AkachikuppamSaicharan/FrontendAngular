@@ -1,0 +1,98 @@
+/* .main{
+    display: flex;
+    justify-content: space-evenly;
+    text-align: center;
+}
+.box{
+    display: flex;
+    flex-direction: column;
+    margin-top: 200px;
+}
+.full-image{
+    width: 200px;
+    height: 200px;
+}
+
+button{
+    padding: 6px 16px;
+    font-size: 20px;
+    font-family: 'Times New Roman';
+    border: none;
+    background-color: rgb(26, 182, 26);
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+ */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #e9ecef; /* Light gray background for a professional look */
+}
+
+.main {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 20px;
+  padding: 30px;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s, box-shadow 0.3s;
+  width: 300px; /* Fixed width for uniformity */
+}
+
+.box:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+.full-image {
+  width: 150px; /* Adjusted for a more professional look */
+  height: 150px;
+  border-radius: 8px;
+  object-fit: cover;
+  margin-bottom: 15px;
+}
+
+h2 {
+  font-size: 24px;
+  color: #333; /* Darker text for better readability */
+  margin: 10px 0;
+}
+
+button {
+  padding: 10px 20px;
+  font-size: 18px;
+  font-family: 'Times New Roman', serif;
+  border: none;
+  background-color: rgb(26, 182, 26);
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s, transform 0.3s;
+}
+
+button:hover {
+  background-color: rgb(20, 150, 20);
+  transform: scale(1.05);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+.topbar {
+  margin-bottom: 15px;
+  text-align: center; /* Center text for a cleaner look */
+}

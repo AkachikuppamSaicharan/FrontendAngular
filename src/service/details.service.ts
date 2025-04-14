@@ -8,7 +8,6 @@ export class DetailsService {
   private customerDetails: CustomerDetails = {
     name: '',
     userID: '',
-    address: '',
     customerType: '',
     email: '',
     mobile: 0
@@ -36,7 +35,6 @@ export class DetailsService {
     this.customerDetails = {
       name: '',
       userID: '',
-      address: '',
       customerType: '',
       email: '',
       mobile: 0

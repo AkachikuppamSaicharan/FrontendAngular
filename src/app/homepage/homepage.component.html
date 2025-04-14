@@ -1,0 +1,71 @@
+<!-- <div class="wrapper">
+    <header class="header">
+        <div class="d-flex">
+
+            <div class="bg-dark sidebar">
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/HomePage">Home</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Pay-Bills">View Bills</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Bill-History">Pay Bill</a>
+                </div>
+                <div class="nav-item">
+                    <a class="nav-link" routerLink="/Complaint">Complaint</a>
+                </div>
+            </div>
+
+            <div class="flex-grow-1 bg-light topbar">
+                <span class="fw-bold">Welcome, {{name}}</span>
+                <button type="submit" (click)="logout()">Logout</button>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="mainarea">
+            <p class="p-tag">Electricity Management</p>
+            <h3>Smart electricity use isn't just good for your bill</h3>
+            <h3>It's good for the planet.</h3>
+            <h3>Let's power up with purpose and responsibility.</h3>
+        </div>
+        <div class="mainarea1">
+            <img class="full-image" src="assets/images/home_image.jpg" alt="Dynamic Image">
+        </div>
+    </main>
+    <footer class="footer">
+        <h3>© 2025 Electricity Management Portal. All rights reserved.</h3>
+    </footer>
+</div> -->
+<div class="wrapper">
+  <header class="header">
+    <nav class="navbar">
+      <div class="navbar-brand">Electricity Management Portal</div>
+      <div class="navbar-links">
+        <a class="nav-link" routerLink="/Homepage">Home</a>
+        <a class="nav-link" routerLink="/BillHistory">View Bills</a>
+        <a class="nav-link" routerLink="/PayBill">Pay Bill</a>
+        <a class="nav-link" routerLink="/">Complaint</a>
+      </div>
+      <div class="navbar-user">
+        <span class="fw-bold">Welcome, {{this.names}}</span>
+        <button type="submit" (click)="logout()">Logout</button>
+      </div>
+    </nav>
+  </header>
+  <main class="main">
+    <div class="mainarea">
+      <p class="p-tag">Electricity Management System</p>
+      <h3>Smart electricity use isn't just good for your bill</h3>
+      <h3>It's good for the planet.</h3>
+      <h3>Let's power up with purpose and responsibility.</h3>
+    </div>
+    <div class="mainarea1">
+      <img class="full-image" src="assets/images/home_image.jpg" alt="Dynamic Image">
+    </div>
+  </main>
+  <footer class="footer">
+    <h3>© 2025 Electricity Management Portal. All rights reserved.</h3>
+  </footer>
+</div>

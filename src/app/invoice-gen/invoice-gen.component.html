@@ -1,0 +1,37 @@
+<div class="transaction-list" *ngIf="invoiceData?.length">
+  <div
+    class="transaction-block"
+    *ngFor="let txn of invoiceData; let i = index"
+    (click)="toggleExpand(i)"
+  >
+    <div class="txn-header">
+      <strong>Transaction ID:</strong> {{ txn.tid }}
+      <span class="expand-icon">{{ expandedIndex === i ? '▲' : '▼' }}</span>
+    </div>
+
+    <div class="txn-details" *ngIf="expandedIndex === i">
+      <p><strong>Invoice Number:</strong> {{ txn.invoiceNumber }}</p>
+      <p><strong>Payment ID:</strong> {{ txn.paymentid }}</p>
+      <p><strong>Receipt Number:</strong> {{ txn.receiptnumber }}</p>
+      <p><strong>Consumer Name:</strong> {{ this.billsService.getCustomerDetails().name }}</p>
+      <p><strong>Mobile Number:</strong> {{ this.billsService.getCustomerDetails().mobile }}</p>
+      <p><strong>Email:</strong> {{ this.billsService.getCustomerDetails().email }}</p>
+      <p><strong>Transaction Date:</strong> {{ txn.date }}</p>
+      <p><strong>Transaction Type:</strong> {{ txn.type }}</p>
+      <p><strong>Bill Number:</strong> {{ txn.billnumbers }}</p>
+      <p><strong>Amount:</strong> ₹{{ txn.amount }}</p>
+      <p><strong>Status:Success</strong>
+<!--        <span [ngClass]="{ 'paid': txn.status === 'Paid', 'unpaid': txn.status !== 'Paid' }">-->
+<!--          {{ txn.status }}-->
+<!--        </span>-->
+      </p>
+    </div>
+  </div>
+
+  <button class="back-btn" (click)="goBack()">Back to Dashboard</button>
+</div>
+
+<div *ngIf="!invoiceData?.length" class="no-invoice">
+  <p>No invoice data found.</p>
+  <button class="back-btn" (click)="goBack()">Back to Dashboard</button>
+</div>

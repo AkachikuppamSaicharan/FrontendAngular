@@ -1,0 +1,9 @@
+<div class="overlay" *ngIf="show">
+  <div class="modal">
+    <p>Your session is about to expire. Would you like to stay logged in?</p>
+    <div class="buttons">
+      <button (click)="continue()">Continue Session</button>
+      <button (click)="logout()">Logout Now</button>
+    </div>
+  </div>
+</div>

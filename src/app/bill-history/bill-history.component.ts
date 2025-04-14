@@ -194,7 +194,7 @@ export class BillHistoryComponent implements OnInit {
     doc.setFontSize(11);
     doc.text(`Name: ${this.customer.name}`, 10, 30);
     doc.text(`Email: ${this.customer.email}`, 10, 40);
-    doc.text(`Address: ${this.customer.address}`, 10, 60);
+    doc.text(`Address: ${this.customer.mobile}`, 10, 60);
     doc.text(`Connection Type: ${this.customer.customerType}`, 10, 70);
 
     // Bill Details Block

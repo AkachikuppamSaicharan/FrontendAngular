@@ -1,0 +1,100 @@
+<div class="login-container">
+  <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()" class="container mt-4 p-4 border rounded bg-light">
+    <h1 class="mb-4">Customer Registartion</h1>
+
+    <!--Consumer Numnber-->
+    <div class="mb-3">
+      <label >Consumer Number: </label>
+      <input class="form-control" formControlName="customerNumber" type="text" maxlength="13"/>
+      <div class="text-danger" *ngIf="formErrors.customerNumber">{{formErrors.customerNumber}}</div>
+    </div>
+
+
+    <!--Full Name-->
+    <div class="mb-3">
+      <label >Full Name: </label>
+      <input class="form-control" formControlName="name" type="text"/>
+      <div class="text-danger" *ngIf="formErrors.name">{{formErrors.name}}</div>
+    </div>
+
+
+    <!--Address-->
+    <div class="mb-3">
+      <label >Address: </label>
+      <textarea class="form-control" formControlName="address"></textarea>
+      <div class="text-danger" *ngIf="formErrors.address">{{formErrors.address}}</div>
+    </div>
+
+    <!--Email-->
+    <div class="mb-3">
+      <label >Email: </label>
+      <input class="form-control" formControlName="email" type="email"/>
+      <div class="text-danger" *ngIf="formErrors.email">{{formErrors.email}}</div>
+    </div>
+
+    <!--Mobile Number-->
+    <div class="mb-3">
+      <label>Mobile Number: </label>
+      <input class="form-control" formControlName="mobileNumber" type="text"/>
+      <div class="text-danger" *ngIf="formErrors.mobileNumber">{{formErrors.mobileNumber}}</div>
+    </div>
+
+    <!--Customer Type-->
+    <div class="mb-3">
+      <label>Customer Type: </label>
+      <select class="form-select"formData formControlName="customerType">
+        <option value="Resident">Resident</option>
+        <option value="Commercial">Commercial</option>
+      </select>
+    </div>
+
+    <!--Electrical Section-->
+    <div class="mb-3">
+      <label>Electrical Section Office/Region: </label>
+      <input class="form-control" formControlName="electricalSection" type="text"/>
+    </div>
+
+    <!--UserId-->
+    <div class="mb-3">
+      <label>UserID: </label>
+      <input class="form-control" formControlName="userID" type="text"/>
+      <div class="text-danger" *ngIf="formErrors.userID">{{formErrors.userID}}</div>
+    </div>
+
+    <!--Password-->
+    <div class="mb-3">
+      <label>Password: </label>
+      <input class="form-control" formControlName="password" type="text"/>
+      <div class="text-danger" *ngIf="formErrors.password">{{formErrors.password}}</div>
+    </div>
+
+    <!--Confirm Password-->
+    <div class="mb-3">
+      <label>Confirm Password: </label>
+      <input class="form-control" formControlName="confirmPassword" type="text"/>
+      <div class="text-danger" *ngIf="formErrors.confirmPassword">{{formErrors.confirmPassword}}</div>
+    </div>
+
+    <div class="register-btn">
+      <button class="btn btn-primary" type="submit">Register</button>
+    </div>
+
+  </form>
+  <form [formGroup]="registrationForm" (ngSubmit)="onLogin()">
+    <div *ngIf="confirmationMessage" class="alert alert-success mt-4">
+      {{confirmationMessage}}
+    </div>
+    <div *ngIf="consumerID" class="alert alert-success mt-4">
+      {{consumerID}}
+    </div>
+    <div *ngIf="name" class="alert alert-success mt-4">
+      {{name}}
+    </div>
+    <div *ngIf="email" class="alert alert-success mt-4">
+      {{email}}
+    </div>
+    <div class="login-div">
+      <button class="login-btn" type="submit">Back to Login</button>
+    </div>
+  </form>
+</div>
