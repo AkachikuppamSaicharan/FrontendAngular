@@ -33,8 +33,12 @@
   <div class="summary">
     <span>Total: ₹ {{ totalAmount }}</span>
   </div>
-
+  <div *ngIf="!selectedPaymentMethod" class="payment-indication">
+    <span>Please choose a payment method.</span>
+  </div>
   <div class="payment-method">
+
+  </div>
     <input
       type="radio"
       id="credit"
@@ -60,7 +64,7 @@
     <button (click)="goBack()">Back</button>
     <button [disabled]="!canProceed()" (click)="proceedToPayment()">Proceed to Payment</button>
   </div>
-</div>
+
 
 <ng-template #errorTemplate>
   <div class="error-container">

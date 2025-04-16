@@ -1,3 +1,99 @@
+<!--&lt;!&ndash; Payment Form &ndash;&gt;-->
+<!--<div class="payment-container" *ngIf="!showConfirmation && !paymentSuccess">-->
+<!--  <h2>Card Payment</h2>-->
+
+<!--  <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">-->
+<!--    <div class="amount-display">Amount to Pay: ₹{{ totalAmount }}</div>-->
+
+<!--    &lt;!&ndash; Card Number &ndash;&gt;-->
+<!--    <label>-->
+<!--      Card Number-->
+<!--      <input type="text" formControlName="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" />-->
+<!--      <div *ngIf="getControl('cardNumber')?.touched && getControl('cardNumber')?.errors?.['required']" class="error">-->
+<!--        Card number is required.-->
+<!--      </div>-->
+<!--      <div *ngIf="cardType" class="card-type">Detected Card: {{ cardType }}</div>-->
+<!--    </label>-->
+
+<!--    &lt;!&ndash; Expiry Date &ndash;&gt;-->
+<!--    <label>-->
+<!--      Expiry Date (MM/YY)-->
+<!--      <input type="text" formControlName="expiryDate" maxlength="5" placeholder="MM/YY" />-->
+<!--      <div *ngIf="getControl('expiryDate')?.touched && getControl('expiryDate')?.errors?.['required']" class="error">-->
+<!--        Expiry date is required.-->
+<!--      </div>-->
+<!--      <div *ngIf="getControl('expiryDate')?.touched && getControl('expiryDate')?.errors?.['expired']" class="error">-->
+<!--        Card is expired or invalid.-->
+<!--      </div>-->
+<!--    </label>-->
+
+<!--    &lt;!&ndash; CVV &ndash;&gt;-->
+<!--    <label>-->
+<!--      CVV-->
+<!--      <input type="password" formControlName="cvv" [maxlength]="cvvMaxLength" placeholder="Enter CVV" />-->
+<!--      <div *ngIf="getControl('cvv')?.touched && getControl('cvv')?.errors" class="error">-->
+<!--        <div *ngIf="getControl('cvv')?.errors?.['required']">CVV is required.</div>-->
+<!--        <div *ngIf="getControl('cvv')?.errors?.['pattern']">Invalid CVV format.</div>-->
+<!--      </div>-->
+<!--    </label>-->
+
+<!--    &lt;!&ndash; Cardholder Name &ndash;&gt;-->
+<!--    &lt;!&ndash; Cardholder Name &ndash;&gt;-->
+<!--    <label>-->
+<!--      Cardholder Name-->
+<!--      <input type="text" formControlName="cardHolder" placeholder="Enter cardholder name" />-->
+<!--      <div *ngIf="getControl('cardHolder')?.touched && getControl('cardHolder')?.invalid" class="error">-->
+<!--        <div *ngIf="getControl('cardHolder')?.errors?.['required']">-->
+<!--          Cardholder name is required.-->
+<!--        </div>-->
+<!--        <div *ngIf="getControl('cardHolder')?.errors?.['pattern']">-->
+<!--          Only letters and spaces allowed.-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </label>-->
+
+
+<!--    <div class="btn-group">-->
+<!--      <button type="submit" [disabled]="paymentForm.invalid">Pay Now</button>-->
+<!--    </div>-->
+<!--    <div class="btn-group">-->
+<!--      <button type="submit" (click)="goToDashboard()">Cancel</button>-->
+<!--    </div>-->
+<!--  </form>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Confirmation Prompt &ndash;&gt;-->
+<!--<div *ngIf="showConfirmation && !paymentSuccess" class="confirmation">-->
+<!--  <h2>Confirm Your Payment</h2>-->
+<!--  <p><strong>Amount:</strong> ₹{{ totalAmount }}</p>-->
+<!--  <p><strong>Cardholder:</strong> {{ getControl('cardHolder')?.value }}</p>-->
+<!--  <p><strong>Card Type:</strong> {{ cardType }}</p>-->
+<!--  <div class="btn-group">-->
+<!--    <button (click)="confirmPayment()">Confirm</button>-->
+<!--    <button class="cancel" (click)="cancelPayment()">Cancel</button>-->
+<!--  </div>-->
+<!--</div>-->
+
+<!--&lt;!&ndash; Success Message &ndash;&gt;-->
+<!--<div class="success-container" *ngIf="paymentSuccess">-->
+<!--  <h2>Payment Successful</h2>-->
+<!--  <ul>-->
+<!--    <li><strong>Payment ID:</strong> {{ transactionDetails.paymentid }}</li>-->
+<!--    <li><strong>Transaction ID:</strong> {{ transactionDetails.tid }}</li>-->
+<!--    <li><strong>Receipt Number:</strong> {{ transactionDetails.receiptnumber }}</li>-->
+<!--    <li><strong>Transaction Date:</strong> {{ transactionDetails.date }}</li>-->
+<!--    <li><strong>Transaction Type:</strong> {{ transactionDetails.type }}</li>-->
+<!--    <li><strong>Bill Number:</strong> {{ transactionDetails.billnumbers }}</li>-->
+<!--    <li><strong>Amount:</strong> ₹{{ transactionDetails.amount }}</li>-->
+<!--    <li><strong>Status:</strong> {{ transactionDetails.status }}</li>-->
+<!--  </ul>-->
+
+<!--  <div class="btn-group">-->
+<!--    <button class="dashboard-btn" (click)="goToDashboard()">Return to Dashboard</button>-->
+<!--    <button class="generate-btn" (click)="generateInvoice()">Generate Invoice</button>-->
+<!--  </div>-->
+<!--</div>-->
+
 <!-- Payment Form -->
 <div class="payment-container" *ngIf="!showConfirmation && !paymentSuccess">
   <h2>Card Payment</h2>
@@ -8,9 +104,15 @@
     <!-- Card Number -->
     <label>
       Card Number
-      <input type="text" formControlName="cardNumber" maxlength="19" placeholder="XXXX XXXX XXXX XXXX" />
-      <div *ngIf="getControl('cardNumber')?.touched && getControl('cardNumber')?.errors?.['required']" class="error">
-        Card number is required.
+      <input
+        type="text"
+        formControlName="cardNumber"
+        maxlength="19"
+        placeholder="XXXX XXXX XXXX XXXX"
+      />
+      <div class="error" *ngIf="getControl('cardNumber')?.touched">
+        <div *ngIf="getControl('cardNumber')?.errors?.['required']">Card number is required.</div>
+        <div *ngIf="getControl('cardNumber')?.errors?.['pattern']">Only numbers allowed.</div>
       </div>
       <div *ngIf="cardType" class="card-type">Detected Card: {{ cardType }}</div>
     </label>
@@ -18,31 +120,45 @@
     <!-- Expiry Date -->
     <label>
       Expiry Date (MM/YY)
-      <input type="text" formControlName="expiryDate" maxlength="5" placeholder="MM/YY" />
-      <div *ngIf="getControl('expiryDate')?.touched && getControl('expiryDate')?.errors?.['required']" class="error">
-        Expiry date is required.
-      </div>
-      <div *ngIf="getControl('expiryDate')?.touched && getControl('expiryDate')?.errors?.['expired']" class="error">
-        Card is expired or invalid.
+      <input
+        type="text"
+        formControlName="expiryDate"
+        maxlength="5"
+        placeholder="MM/YY"
+      />
+      <div class="error" *ngIf="getControl('expiryDate')?.touched">
+        <div *ngIf="getControl('expiryDate')?.errors?.['required']">Expiry date is required.</div>
+        <div *ngIf="getControl('expiryDate')?.errors?.['expired']">Card is expired or invalid.</div>
+        <div *ngIf="getControl('expiryDate')?.errors?.['pattern']">Invalid date format. Use MM/YY.</div>
       </div>
     </label>
 
     <!-- CVV -->
     <label>
       CVV
-      <input type="password" formControlName="cvv" [maxlength]="cvvMaxLength" placeholder="Enter CVV" />
-      <div *ngIf="getControl('cvv')?.touched && getControl('cvv')?.errors" class="error">
+      <input
+        type="password"
+        formControlName="cvv"
+        [maxlength]="cvvMaxLength"
+        placeholder="Enter CVV"
+      />
+      <div class="error" *ngIf="getControl('cvv')?.touched">
         <div *ngIf="getControl('cvv')?.errors?.['required']">CVV is required.</div>
-        <div *ngIf="getControl('cvv')?.errors?.['pattern']">Invalid CVV format.</div>
+        <div *ngIf="getControl('cvv')?.errors?.['pattern']">Only digits allowed. Must be {{ cvvMaxLength }} digits.</div>
       </div>
     </label>
 
     <!-- Cardholder Name -->
     <label>
       Cardholder Name
-      <input type="text" formControlName="cardHolder" placeholder="Enter cardholder name" />
-      <div *ngIf="getControl('cardHolder')?.touched && getControl('cardHolder')?.errors?.['required']" class="error">
-        Cardholder name is required.
+      <input
+        type="text"
+        formControlName="cardHolder"
+        placeholder="Enter cardholder name"
+      />
+      <div class="error" *ngIf="getControl('cardHolder')?.touched">
+        <div *ngIf="getControl('cardHolder')?.errors?.['required']">Cardholder name is required.</div>
+        <div *ngIf="getControl('cardHolder')?.errors?.['pattern']">Only letters and spaces allowed.</div>
       </div>
     </label>
 
@@ -50,7 +166,7 @@
       <button type="submit" [disabled]="paymentForm.invalid">Pay Now</button>
     </div>
     <div class="btn-group">
-      <button type="submit" (click)="goToDashboard()">Cancel</button>
+      <button type="button" (click)="goToDashboard()">Cancel</button>
     </div>
   </form>
 </div>
@@ -86,4 +202,3 @@
     <button class="generate-btn" (click)="generateInvoice()">Generate Invoice</button>
   </div>
 </div>
-

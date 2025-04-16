@@ -10,7 +10,6 @@ import {DetailsService} from '../../service/details.service';
   selector: 'app-view-bills',
   templateUrl: './view-bill.component.html',
   styleUrls: ['./view-bill.component.css'],
-  standalone: true,
   imports: [FormsModule, CurrencyPipe, NgIf, NgForOf, RouterLink]
 })
 export class ViewBillsComponent {
@@ -25,7 +24,7 @@ export class ViewBillsComponent {
   ngOnInit():void{
     this.names=this.detailService.getCustomerDetails().name;
     this.User_Id=this.detailService.getCustomerDetails().userID;
-    this.seeBills.getBills(this.User_Id).subscribe({
+    this.seeBills.getBills("Akach").subscribe({
       next:(data:any)=>{
         console.log(data);
         console.log(data.length);
@@ -61,7 +60,21 @@ export class ViewBillsComponent {
     setTimeout(() => {
       this.bills.forEach(bill => this.handlePayableChange(bill));
       this.updateTotalAmount();
+      this.clearOrSetErrorBasedOnSelection();
     });
+    // this.updateProceedErrorIfNoneSelected();
+    this.clearProceedErrorIfValidSelected();
+  }
+  clearOrSetErrorBasedOnSelection() {
+    const hasValidBill = this.bills.some(bill =>
+      bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
+    );
+
+    if (hasValidBill) {
+      this.proceedError = '';
+    } else {
+      this.proceedError = 'No Bills Selected to Proceed for Payment';
+    }
   }
 
   handlePayableChange(bill: Bill) {
@@ -93,6 +106,7 @@ export class ViewBillsComponent {
 
     this.updateTotalAmount();
     this.syncSelectAll();
+    // this.updateProceedErrorIfNoneSelected();
   }
 
 
@@ -110,73 +124,72 @@ export class ViewBillsComponent {
       .reduce((total, bill) => total + bill.payableAmount!, 0);
   }
 
-  // proceedToPay() {
-  //   this.proceedError = '';
-  //   const validBills = this.bills.filter(
-  //     bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.dueAmount)
-  //   );
-  //
-  //   if (validBills.length === 0) {
-  //     this.proceedError = 'No valid bills selected';
-  //     return;
-  //   }
-  //
-  //   const totalDue = validBills.reduce((sum, bill) => sum + bill.dueAmount, 0);
-  //   const totalPayable = validBills.reduce((sum, bill) => sum + bill.payableAmount!, 0);
-  //
-  //   if (totalDue !== totalPayable) {
-  //     this.proceedError = 'Total payable amount must equal total due amount';
-  //     return;
-  //   }
-  //   this.billService.setSelectedBills(validBills)
-  //   this.router.navigate(['view-billsummary'], { state: { bills: validBills } });
-  // }
+
+  clearProceedErrorIfValidSelected() {
+    const hasValidBill = this.bills.some(bill =>
+      bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
+    );
+
+    if (hasValidBill && this.proceedError) {
+      this.proceedError = '';
+    }
+  }
+
   proceedToPay() {
-    this.proceedError = '';
-    const validBills = this.bills.filter(
-      bill => bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
+    const validBills = this.bills.filter(bill =>
+      bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
     );
 
     if (validBills.length === 0) {
-      this.proceedError = 'No valid bills selected';
+      this.proceedError = 'No Bills Selected to Proceed for Payment';
       return;
     }
 
     const totalDue = validBills.reduce((sum, bill) => sum + bill.Due_Amount, 0);
-    const totalPayable = validBills.reduce((sum, bill) => sum + bill.payableAmount!, 0);
+    const totalPayable = validBills.reduce((sum, bill) => sum + (bill.payableAmount || 0), 0);
 
-    if (totalDue !== totalPayable) {
+    if (totalPayable === 0 || totalDue !== totalPayable) {
       this.proceedError = 'Total payable amount must equal total due amount';
       return;
     }
 
-    this.billService.setSelectedBills(validBills); // ✅ Save to service
-    this.router.navigate(['PayBillSummary'],{
+    // ✅ All clear — clear any lingering errors
+    this.proceedError = '';
 
-    });
+    this.billService.setSelectedBills(validBills);
+    this.router.navigate(['PayBillSummary']);
   }
+
 
   onCheckboxChange(bill: Bill) {
     if (bill.selected) {
-      // If selected and amount is null or 0, auto-fill dueAmount
-      if (
-        bill.payableAmount === null ||
-        bill.payableAmount === undefined ||
-        bill.payableAmount === 0
-      ) {
-        bill.payableAmount = bill.Due_Amount;
-      }
+      // Clear previous errors
+      bill.errorMessage = '';
 
-      // Validate amount on selection
+      // Reset payable amount to due amount
+      bill.payableAmount = bill.Due_Amount;
+
+      // Revalidate
       this.handlePayableChange(bill);
     } else {
-      // On unchecking: clear errors and value
+      // If unchecked manually or due to error
       bill.errorMessage = '';
       bill.payableAmount = null;
     }
 
     this.updateTotalAmount();
     this.syncSelectAll();
+
+    // Additional check for the error message below the table
+    this.updateProceedErrorIfNoneSelected();
+    this.clearProceedErrorIfValidSelected();
+  }
+  updateProceedErrorIfNoneSelected() {
+    const hasValidBill = this.bills.some(bill =>
+      bill.selected && this.isValidAmount(bill.payableAmount, bill.Due_Amount)
+    );
+
+    this.proceedError = hasValidBill ? '' : 'No Bills Selected to Proceed for Payment';
   }
 
   syncSelectAll() {

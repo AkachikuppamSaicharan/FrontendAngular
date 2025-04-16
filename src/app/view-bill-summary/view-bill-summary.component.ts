@@ -24,7 +24,8 @@ export class ViewBillSummaryComponent {
       alert("Unauthorized Access to this Page Using Url is not a Good Practice! Redirecting to Bills Page");
       this.router.navigate(['PayBill']);
       return;
-    }
+    }this.selectAll=true;
+
   }
 
 
