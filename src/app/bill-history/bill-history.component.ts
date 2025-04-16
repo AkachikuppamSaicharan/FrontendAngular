@@ -33,27 +33,49 @@ export class BillHistoryComponent implements OnInit {
   sortColumn: string = '';
   sortDirection: 'asc' | 'desc' = 'asc';
   selectedStatusFilter: string = 'All';
+  sixMonthsAgo: Date = new Date();
   constructor(private router:Router,private billService:GetBillsService,private detailService:DetailsService){}
   ngOnInit() {
-    this.names=this.detailService.getCustomerDetails().userID;
-    const sixMonthsAgo = new Date();
-    sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
-    this.customer=this.detailService.getCustomerDetails();
+    // this.names=this.detailService.getCustomerDetails().userID;
+    // const sixMonthsAgo = new Date();
+    // sixMonthsAgo.setMonth(sixMonthsAgo.getMonth() - 6);
+    // this.customer=this.detailService.getCustomerDetails();
+    // this.billService.getHistoryBills(this.names).subscribe({
+    //   next:(data:any)=>{
+    //     console.log(data);
+    //     console.log(data.length);
+    //     if(data && data.length>0){
+    //       this.allBills=data;
+    //       console.log(data)
+    //     }
+    //     else{
+    //       this.allBills=[];
+    //     }
+    //   }
+    // })
+    //
+    // this.filterBills();
+    this.names = this.detailService.getCustomerDetails().userID;
+    this.customer = this.detailService.getCustomerDetails();
+
+    // Set sixMonthsAgo to 6 months before today
+    this.sixMonthsAgo.setMonth(this.sixMonthsAgo.getMonth() - 6);
+
+    // Set fromDate and toDate to auto-filter last 6 months
+    this.fromDate = this.sixMonthsAgo.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+    this.toDate = new Date().toISOString().split('T')[0];
+
     this.billService.getHistoryBills(this.names).subscribe({
-      next:(data:any)=>{
-        console.log(data);
-        console.log(data.length);
-        if(data && data.length>0){
-          this.allBills=data;
-          console.log(data)
-        }
-        else{
-          this.allBills=[];
+      next: (data: any) => {
+        if (data && data.length > 0) {
+          this.allBills = data;
+          this.filterBills(); // Apply 6-month filter right after data fetch
+        } else {
+          this.allBills = [];
+          this.filteredBills = [];
         }
       }
-    })
-
-    this.filterBills();
+    });
   }
   fromDate: string = '';
   toDate: string = '';
@@ -192,16 +214,17 @@ export class BillHistoryComponent implements OnInit {
     doc.setFontSize(14);
     doc.text('Customer Details', 10, 10);
     doc.setFontSize(11);
+    doc.text(`Consumer Number: ${bill.Customer_Number}`, 10, 20);
     doc.text(`Name: ${this.customer.name}`, 10, 30);
     doc.text(`Email: ${this.customer.email}`, 10, 40);
-    doc.text(`Address: ${this.customer.mobile}`, 10, 60);
+    doc.text(`Mobile_Number: ${this.customer.mobile}`, 10, 60);
     doc.text(`Connection Type: ${this.customer.customerType}`, 10, 70);
 
     // Bill Details Block
     doc.setFontSize(14);
     doc.text('Bill Details', 10, 90);
     doc.setFontSize(11);
-    doc.text(`Customer Number: ${bill.Customer_Number}`, 10, 20);
+
     doc.text(`Bill Number: ${bill.Bill_Number}`, 10, 100);
     doc.text(`Bill Date: ${bill.Bill_Date}`, 10, 110);
     doc.text(`Billing Period: ${bill.Billing_Period}`, 10, 120);
